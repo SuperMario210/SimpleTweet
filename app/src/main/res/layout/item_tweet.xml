@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottom_border">
+
+    <ImageView
+        android:id="@+id/ivShare"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="64dp"
+        app:layout_constraintStart_toEndOf="@+id/ivFavorite"
+        app:layout_constraintTop_toTopOf="@+id/ivFavorite"
+        app:srcCompat="@drawable/ic_icons8_material_outlined" />
+
+    <ImageView
+        android:id="@+id/ivFavorite"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="64dp"
+        app:layout_constraintStart_toStartOf="@+id/tvRetweet"
+        app:layout_constraintTop_toTopOf="@+id/ivReply"
+        app:srcCompat="@drawable/ic_vector_heart_stroke" />
+
+    <TextView
+        android:id="@+id/tvFavorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="1566"
+        android:textColor="@color/dark_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/ivFavorite"
+        app:layout_constraintStart_toEndOf="@+id/ivFavorite"
+        app:layout_constraintTop_toTopOf="@+id/ivFavorite" />
+
+    <ImageView
+        android:id="@+id/ivRetweet"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="64dp"
+        app:layout_constraintStart_toStartOf="@+id/tvReply"
+        app:layout_constraintTop_toTopOf="@+id/ivReply"
+        app:srcCompat="@drawable/ic_vector_retweet_stroke" />
+
+    <TextView
+        android:id="@+id/tvRetweet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="75"
+        android:textColor="@color/dark_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/ivRetweet"
+        app:layout_constraintStart_toEndOf="@+id/ivRetweet"
+        app:layout_constraintTop_toTopOf="@+id/ivRetweet" />
+
+    <ImageView
+        android:id="@+id/ivProfileImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/avatar" />
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="10dp"
+        android:text="Sundar Pichai"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/ivProfileImage"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvBody"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        android:autoLink="all"
+        android:lineSpacingExtra="2sp"
+        android:text="Enterprise APIs only Collection of Enrichment metadata derived for user. Provides the Profile Geo Enrichment metadata. See referenced documentation for more information, including JSON data dictionaries"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvUserName"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserName" />
+
+    <TextView
+        android:id="@+id/tvTimestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:gravity="right"
+        android:text="7m"
+        android:textColor="@color/dark_gray"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/tvSpacer"
+        app:layout_constraintTop_toTopOf="@+id/tvUserName" />
+
+    <TextView
+        android:id="@+id/tvSpacer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:gravity="right"
+        android:text="·"
+        android:textColor="@color/dark_gray"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/tvScreenName"
+        app:layout_constraintTop_toTopOf="@+id/tvUserName" />
+
+    <TextView
+        android:id="@+id/tvScreenName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="\@sundarpichai"
+        android:textColor="@color/dark_gray"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/tvUserName"
+        app:layout_constraintTop_toTopOf="@+id/tvUserName" />
+
+    <ImageView
+        android:id="@+id/ivReply"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/tvBody"
+        app:layout_constraintTop_toBottomOf="@+id/ivMedia"
+        app:srcCompat="@drawable/ic_reply" />
+
+    <TextView
+        android:id="@+id/tvReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/dark_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/ivReply"
+        app:layout_constraintStart_toEndOf="@+id/ivReply"
+        app:layout_constraintTop_toTopOf="@+id/ivReply" />
+
+    <ImageView
+        android:id="@+id/ivMedia"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/tvBody"
+        app:layout_constraintStart_toStartOf="@+id/tvBody"
+        app:layout_constraintTop_toBottomOf="@+id/tvBody"
+        app:srcCompat="@color/dark_gray" />
+
+    <ImageView
+        android:id="@+id/ivFavoriteAnim"
+        android:layout_width="49dp"
+        android:layout_height="49dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/ivReply"
+        app:layout_constraintEnd_toEndOf="@+id/ivFavorite"
+        app:layout_constraintStart_toStartOf="@+id/ivFavorite"
+        app:layout_constraintTop_toTopOf="@+id/ivReply"
+        app:srcCompat="@drawable/fav_anim" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
