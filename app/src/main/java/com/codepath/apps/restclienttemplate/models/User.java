@@ -2,14 +2,22 @@ package com.codepath.apps.restclienttemplate.models;
 
 import android.util.Log;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
 @Parcel
+@Entity(
+    tableName = "user"
+)
 public class User {
-    public String name;
+    @PrimaryKey
     public long uid;
+
+    public String name;
     public String screenName;
     public String profileImageUrl;
 

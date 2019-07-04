@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.DetailActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/twitter_blue"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="8dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0sp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:paddingTop="8dp">
+
+            <ImageView
+                android:id="@+id/border3"
+                android:layout_width="0dp"
+                android:layout_height=".75dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivReply"
+                app:srcCompat="@color/light_gray" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="Retweets"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/tvRetweet"
+                app:layout_constraintTop_toTopOf="@+id/tvRetweet" />
+
+            <TextView
+                android:id="@+id/tvFavorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="34"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/textView11"
+                app:layout_constraintTop_toTopOf="@+id/tvRetweet" />
+
+            <ImageView
+                android:id="@+id/ivProfileImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:transitionName="profile"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvRetweeted"
+                app:srcCompat="@drawable/avatar" />
+
+            <TextView
+                android:id="@+id/tvScreenName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="\@Google"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp"
+                android:transitionName="screenName"
+                app:layout_constraintStart_toStartOf="@+id/tvUserName"
+                app:layout_constraintTop_toBottomOf="@+id/tvUserName" />
+
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="6dp"
+                android:text="Google"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:transitionName="userName"
+                app:layout_constraintStart_toEndOf="@+id/ivProfileImage"
+                app:layout_constraintTop_toTopOf="@+id/ivProfileImage" />
+
+            <TextView
+                android:id="@+id/tvBody"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:autoLink="all"
+                android:text="It's BBQ season.  Hope you're hungry.  Have a taste of what types of sauces Amaericans are searching for, by state."
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:transitionName="body"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/ivProfileImage"
+                app:layout_constraintTop_toBottomOf="@+id/ivProfileImage" />
+
+            <ImageView
+                android:id="@+id/ivMedia"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:transitionName="media"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/tvBody"
+                app:layout_constraintStart_toStartOf="@+id/tvBody"
+                app:layout_constraintTop_toBottomOf="@+id/tvBody"
+                app:srcCompat="@color/favorite" />
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="10:34 AM"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/tvBody"
+                app:layout_constraintTop_toBottomOf="@+id/ivMedia" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="·"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/tvTime"
+                app:layout_constraintTop_toTopOf="@+id/tvTime" />
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="03 Jul 2018"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/textView5"
+                app:layout_constraintTop_toTopOf="@+id/tvTime" />
+
+            <ImageView
+                android:id="@+id/border1"
+                android:layout_width="0dp"
+                android:layout_height=".75dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toEndOf="@+id/tvBody"
+                app:layout_constraintStart_toStartOf="@+id/tvBody"
+                app:layout_constraintTop_toBottomOf="@+id/tvTime"
+                app:srcCompat="@color/light_gray" />
+
+            <ImageView
+                android:id="@+id/border2"
+                android:layout_width="0dp"
+                android:layout_height=".75dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toEndOf="@+id/tvBody"
+                app:layout_constraintStart_toStartOf="@+id/tvBody"
+                app:layout_constraintTop_toBottomOf="@+id/textView11"
+                app:srcCompat="@color/light_gray" />
+
+            <TextView
+                android:id="@+id/tvRetweet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="29"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/tvTime"
+                app:layout_constraintTop_toBottomOf="@+id/border1" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="Likes"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/tvFavorite"
+                app:layout_constraintTop_toTopOf="@+id/tvRetweet" />
+
+            <ImageView
+                android:id="@+id/ivReply"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="@+id/tvBody"
+                app:layout_constraintHorizontal_bias="0.08"
+                app:layout_constraintStart_toStartOf="@+id/tvBody"
+                app:layout_constraintTop_toBottomOf="@+id/border2"
+                app:srcCompat="@drawable/ic_reply" />
+
+            <ImageView
+                android:id="@+id/ivRetweet"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                app:layout_constraintEnd_toEndOf="@+id/tvBody"
+                app:layout_constraintHorizontal_bias="0.35"
+                app:layout_constraintStart_toStartOf="@+id/tvBody"
+                app:layout_constraintTop_toTopOf="@+id/ivReply"
+                app:srcCompat="@drawable/ic_vector_retweet_stroke" />
+
+            <ImageView
+                android:id="@+id/ivFavorite"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                app:layout_constraintEnd_toEndOf="@+id/tvBody"
+                app:layout_constraintHorizontal_bias="0.65"
+                app:layout_constraintStart_toStartOf="@+id/tvBody"
+                app:layout_constraintTop_toTopOf="@+id/ivReply"
+                app:srcCompat="@drawable/ic_vector_heart_stroke" />
+
+            <ImageView
+                android:id="@+id/ivShare"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                app:layout_constraintEnd_toEndOf="@+id/tvBody"
+                app:layout_constraintHorizontal_bias="0.92"
+                app:layout_constraintStart_toStartOf="@+id/tvBody"
+                app:layout_constraintTop_toTopOf="@+id/ivReply"
+                app:srcCompat="@drawable/ic_icons8_material_outlined" />
+
+            <ImageView
+                android:id="@+id/ivFavoriteAnim"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                app:layout_constraintBottom_toBottomOf="@+id/ivFavorite"
+                app:layout_constraintEnd_toEndOf="@+id/ivFavorite"
+                app:layout_constraintStart_toStartOf="@+id/ivFavorite"
+                app:layout_constraintTop_toTopOf="@+id/ivFavorite"
+                app:srcCompat="@drawable/fav_anim" />
+
+            <TextView
+                android:id="@+id/tvRetweeted"
+                android:transitionName="retweetText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Google Retweeted"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/tvUserName"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivRetweeted"
+                android:transitionName="retweetImage"
+                android:layout_width="14dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/tvRetweeted"
+                app:layout_constraintEnd_toStartOf="@+id/tvRetweeted"
+                app:layout_constraintTop_toTopOf="@+id/tvRetweeted"
+                app:srcCompat="@drawable/ic_vector_retweet_stroke" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

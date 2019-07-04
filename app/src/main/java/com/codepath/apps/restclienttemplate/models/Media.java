@@ -1,14 +1,22 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
 @Parcel
+@Entity(
+    tableName = "media"
+)
 public class Media {
-    public String displayUrl;
+    @PrimaryKey
     public long uid;
+
+    public String displayUrl;
     public int startIndex;
     public int endIndex;
     public String mediaUrl;

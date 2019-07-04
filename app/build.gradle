@@ -47,6 +47,9 @@ dependencies {
     implementation 'com.loopj.android:android-async-http:1.4.9'
     // Room for simple persistence with an ORM
     implementation 'androidx.room:room-runtime:2.0.0'
+    // Room
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
     // Butterknife
     implementation 'com.jakewharton:butterknife:10.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'

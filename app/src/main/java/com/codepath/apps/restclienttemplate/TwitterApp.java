@@ -1,8 +1,9 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.app.Application;
-import androidx.room.Room;
 import android.content.Context;
+
+import androidx.room.Room;
 
 import com.facebook.stetho.Stetho;
 
@@ -18,6 +19,7 @@ import com.facebook.stetho.Stetho;
 public class TwitterApp extends Application {
 
     MyDatabase myDatabase;
+    TweetDataHolder mTweetDataHolder;
 
     @Override
     public void onCreate() {
@@ -26,6 +28,8 @@ public class TwitterApp extends Application {
 		// fallbackToDestructiveMigration()
         myDatabase = Room.databaseBuilder(this, MyDatabase.class,
                 MyDatabase.NAME).fallbackToDestructiveMigration().build();
+
+        mTweetDataHolder = new TweetDataHolder();
 
         // use chrome://inspect to inspect your SQL database
         Stetho.initializeWithDefaults(this);
@@ -37,5 +41,9 @@ public class TwitterApp extends Application {
 
     public MyDatabase getMyDatabase() {
         return myDatabase;
+    }
+
+    public TweetDataHolder getTweetDataHolder() {
+        return mTweetDataHolder;
     }
 }

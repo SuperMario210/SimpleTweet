@@ -5,7 +5,8 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bottom_border">
+    android:background="@drawable/bottom_border"
+    android:paddingTop="8dp">
 
     <ImageView
         android:id="@+id/ivShare"
@@ -61,9 +62,10 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="6dp"
+        android:transitionName="profile"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvUserName"
         app:srcCompat="@drawable/avatar" />
 
     <TextView
@@ -71,13 +73,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="2dp"
         android:text="Sundar Pichai"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         android:textStyle="bold"
+        android:transitionName="userName"
         app:layout_constraintStart_toEndOf="@+id/ivProfileImage"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tvRetweeted" />
 
     <TextView
         android:id="@+id/tvBody"
@@ -89,7 +92,7 @@
         android:lineSpacingExtra="2sp"
         android:text="Enterprise APIs only Collection of Enrichment metadata derived for user. Provides the Profile Geo Enrichment metadata. See referenced documentation for more information, including JSON data dictionaries"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
+        android:transitionName="body"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvUserName"
         app:layout_constraintTop_toBottomOf="@+id/tvUserName" />
@@ -102,7 +105,6 @@
         android:gravity="right"
         android:text="7m"
         android:textColor="@color/dark_gray"
-        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/tvSpacer"
         app:layout_constraintTop_toTopOf="@+id/tvUserName" />
 
@@ -114,7 +116,6 @@
         android:gravity="right"
         android:text="·"
         android:textColor="@color/dark_gray"
-        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/tvScreenName"
         app:layout_constraintTop_toTopOf="@+id/tvUserName" />
 
@@ -125,7 +126,7 @@
         android:layout_marginStart="4dp"
         android:text="\@sundarpichai"
         android:textColor="@color/dark_gray"
-        android:textSize="16sp"
+        android:transitionName="screenName"
         app:layout_constraintStart_toEndOf="@+id/tvUserName"
         app:layout_constraintTop_toTopOf="@+id/tvUserName" />
 
@@ -154,6 +155,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
+        android:transitionName="media"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/tvBody"
         app:layout_constraintStart_toStartOf="@+id/tvBody"
@@ -170,6 +172,28 @@
         app:layout_constraintStart_toStartOf="@+id/ivFavorite"
         app:layout_constraintTop_toTopOf="@+id/ivReply"
         app:srcCompat="@drawable/fav_anim" />
+
+    <TextView
+        android:id="@+id/tvRetweeted"
+        android:transitionName="retweetText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Google Retweeted"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@+id/tvUserName"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivRetweeted"
+        android:transitionName="retweetImage"
+        android:layout_width="14dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/tvRetweeted"
+        app:layout_constraintEnd_toStartOf="@+id/tvRetweeted"
+        app:layout_constraintTop_toTopOf="@+id/tvRetweeted"
+        app:srcCompat="@drawable/ic_vector_retweet_stroke" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

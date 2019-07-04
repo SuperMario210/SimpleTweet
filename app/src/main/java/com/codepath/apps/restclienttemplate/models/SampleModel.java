@@ -17,7 +17,7 @@ import org.json.JSONObject;
 public class SampleModel {
 
 	@PrimaryKey(autoGenerate = true)
-	Long id;
+	public Long id;
 
 	// Define table fields
 	@ColumnInfo

@@ -1,51 +1,56 @@
 package com.codepath.apps.restclienttemplate;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.codepath.apps.restclienttemplate.activities.DetailActivity;
 import com.codepath.apps.restclienttemplate.models.GlideApp;
 import com.codepath.apps.restclienttemplate.models.Media;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> {
-    private List<Tweet> mTweets;
+//    private List<Tweet> mTweets;
+    private TweetDataHolder mTweets;
     private Context mContext;
+    private TwitterClient mClient;
 
-    public TweetAdapter(List<Tweet> tweets) {
+    public TweetAdapter(TweetDataHolder tweets, Context context) {
         mTweets = tweets;
+        mContext = context;
+    }
+
+    public void setClient(TwitterClient client) {
+        mClient = client;
     }
 
     // Clean all elements of the recycler
     public void clear() {
-        mTweets.clear();
-        notifyDataSetChanged();
-    }
-
-    // Add a list of items -- change to type used
-    public void addAll(List<Tweet> list) {
-        mTweets.addAll(list);
+        mTweets.clearData();
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        mContext = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(mContext);
 
         View tweetView = inflater.inflate(R.layout.item_tweet, parent, false);
@@ -55,7 +60,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        Tweet tweet = mTweets.get(position);
+        Tweet tweet = mTweets.getTweetByIndex(position);
 
         holder.tvUserName.setText(tweet.user.name);
         holder.tvScreenName.setText(String.format(Locale.getDefault(), "@%s", tweet.user.screenName));
@@ -64,11 +69,24 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         holder.tvRetweet.setText(String.format(Locale.getDefault(), "%d", tweet.retweets));
         holder.tvTimestamp.setText(Tweet.getRelativeTimeAgo(tweet.createdAt));
 
+        if(tweet.isRetweet) {
+            holder.ivRetweeted.setVisibility(View.VISIBLE);
+            holder.tvRetweeted.setVisibility(View.VISIBLE);
+            holder.tvRetweeted.setText(String.format("%s Retweeted", tweet.retweeter.screenName));
+        } else {
+            holder.ivRetweeted.setVisibility(View.GONE);
+            holder.tvRetweeted.setVisibility(View.GONE);
+        }
+
         if(tweet.isFavorited) {
-            holder.ivFavorite.setImageResource(R.drawable.tile028);
+            holder.ivFavoriteAnim.setVisibility(View.VISIBLE);
+            holder.ivFavoriteAnim.setImageResource(R.drawable.tile028);
+            holder.ivFavorite.setAlpha(0f);
             holder.tvFavorite.setTextColor(mContext.getResources().getColor(R.color.favorite));
         } else {
-            holder.ivFavorite.setVisibility(View.INVISIBLE);
+            holder.ivFavoriteAnim.setVisibility(View.INVISIBLE);
+            holder.ivFavorite.setAlpha(1f);
+            holder.ivFavorite.setImageResource(R.drawable.ic_vector_heart_stroke);
             holder.tvFavorite.setTextColor(mContext.getResources().getColor(R.color.dark_gray));
         }
 
@@ -81,18 +99,86 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         }
 
         holder.ivFavorite.setOnClickListener((View v) -> {
-            holder.ivFavorite.setVisibility(View.INVISIBLE);
-            holder.ivFavoriteAnim.setVisibility(View.VISIBLE);
-            holder.tvFavorite.setTextColor(mContext.getResources().getColor(R.color.favorite));
-            holder.tvFavorite.setText(String.format(Locale.getDefault(), "%d", tweet.favorites + 1));
-            AnimationDrawable favAnim = (AnimationDrawable) holder.ivFavoriteAnim.getDrawable();
-            favAnim.start();
+            Toast.makeText(mContext, "Clicked", Toast.LENGTH_LONG).show();
+            if(!tweet.isFavorited) {
+                holder.ivFavorite.setAlpha(0f);
+                holder.ivFavoriteAnim.setVisibility(View.VISIBLE);
+                holder.tvFavorite.setTextColor(mContext.getResources().getColor(R.color.favorite));
+                tweet.favorites++;
+                holder.tvFavorite.setText(String.format(Locale.getDefault(), "%d", tweet.favorites));
+                holder.ivFavoriteAnim.setImageResource(R.drawable.fav_anim);
+                AnimationDrawable favAnim = (AnimationDrawable) holder.ivFavoriteAnim.getDrawable();
+                favAnim.start();
+                tweet.favorite(mClient);
+                tweet.isFavorited = true;
+            } else {
+                holder.ivFavoriteAnim.setVisibility(View.INVISIBLE);
+                holder.ivFavorite.setAlpha(1f);
+                holder.ivFavorite.setImageResource(R.drawable.ic_vector_heart_stroke);
+                tweet.favorites--;
+                holder.tvFavorite.setText(String.format(Locale.getDefault(), "%d", tweet.favorites));
+                holder.tvFavorite.setTextColor(mContext.getResources().getColor(R.color.dark_gray));
+                tweet.unfavorite(mClient);
+                tweet.isFavorited = false;
+            }
         });
 
         holder.ivRetweet.setOnClickListener((View v) -> {
-            holder.tvRetweet.setTextColor(mContext.getResources().getColor(R.color.retweet));
-            holder.tvRetweet.setText(String.format(Locale.getDefault(), "%d", tweet.retweets + 1));
-            holder.ivRetweet.setImageResource(R.drawable.ic_vector_retweet_stroke_highlight);
+            if(!tweet.isRetweeted) {
+                holder.tvRetweet.setTextColor(mContext.getResources().getColor(R.color.retweet));
+                tweet.retweets++;
+                holder.tvRetweet.setText(String.format(Locale.getDefault(), "%d", tweet.retweets));
+                holder.ivRetweet.setImageResource(R.drawable.ic_vector_retweet_stroke_highlight);
+                tweet.retweet(mClient);
+                tweet.isRetweeted = true;
+            } else {
+                holder.tvRetweet.setTextColor(mContext.getResources().getColor(R.color.dark_gray));
+                tweet.retweets--;
+                holder.tvRetweet.setText(String.format(Locale.getDefault(), "%d", tweet.retweets));
+                holder.ivRetweet.setImageResource(R.drawable.ic_vector_retweet_stroke);
+                tweet.unRetweet(mClient);
+                tweet.isRetweeted = false;
+            }
+        });
+
+        holder.ivShare.setOnClickListener((View v) -> {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, tweet.getUrl());
+            mContext.startActivity(Intent.createChooser(shareIntent, "Share link using"));
+        });
+
+        holder.root.setOnClickListener((View v) -> {
+            Intent i = new Intent(mContext, DetailActivity.class);
+//            i.putExtra("tweet", Parcels.wrap(tweet));
+            i.putExtra("tweetUid", tweet.uid);
+
+            Pair<View, String> p1 = Pair.create(holder.ivProfileImage, "profile");
+            Pair<View, String> p2 = Pair.create(holder.tvUserName, "userName");
+            Pair<View, String> p3 = Pair.create(holder.tvScreenName, "screenName");
+            Pair<View, String> p4 = Pair.create(holder.tvBody, "body");
+            Pair<View, String> p5 = Pair.create(holder.ivMedia, "media");
+            Pair<View, String> p6 = Pair.create(holder.tvRetweeted, "retweetText");
+            Pair<View, String> p7 = Pair.create(holder.ivRetweeted, "retweetImage");
+            ActivityOptionsCompat options;
+            if(!tweet.media.isEmpty()) {
+                if(tweet.isRetweet) {
+                    options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation((Activity) mContext, p1, p2, p3, p4, p5, p6, p7);
+                } else {
+                    options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation((Activity) mContext, p1, p2, p3, p4, p5);
+                }
+            } else {
+                if(tweet.isRetweet) {
+                    options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation((Activity) mContext, p1, p2, p3, p4, p6, p7);
+                } else {
+                    options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation((Activity) mContext, p1, p2, p3, p4);
+                }
+            }
+            mContext.startActivity(i, options.toBundle());
         });
 
         GlideApp.with(mContext)
@@ -110,6 +196,8 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
                     .load(media.mediaUrl)
 //                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(75)))
                     .into(holder.ivMedia);
+        } else {
+            holder.ivMedia.setVisibility(View.GONE);
         }
     }
 
@@ -131,7 +219,10 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         @BindView(R.id.tvFavorite) TextView tvFavorite;
         @BindView(R.id.ivRetweet) ImageView ivRetweet;
         @BindView(R.id.tvRetweet) TextView tvRetweet;
+        @BindView(R.id.ivShare) ImageView ivShare;
         @BindView(R.id.root) View root;
+        @BindView(R.id.tvRetweeted) TextView tvRetweeted;
+        @BindView(R.id.ivRetweeted) View ivRetweeted;
 
         public ViewHolder(View view) {
             super(view);
