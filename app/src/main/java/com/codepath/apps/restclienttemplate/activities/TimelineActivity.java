@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -24,7 +25,6 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcels;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +33,6 @@ import cz.msebera.android.httpclient.Header;
 public class TimelineActivity extends AppCompatActivity {
     public static final int COMPOSE_TWEET_CODE = 1;
 
-//    private ArrayList<Tweet> tweets;
     private TweetDataHolder mTweets;
     private TwitterClient client;
     private TweetAdapter tweetAdapter;
@@ -120,10 +119,9 @@ public class TimelineActivity extends AppCompatActivity {
         if (requestCode == COMPOSE_TWEET_CODE) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                Tweet tweet = Parcels.unwrap(getIntent().getParcelableExtra("tweet"));
-                mTweets.addTweet(tweet);
-                tweetAdapter.notifyItemChanged(0);
-                rvTweet.scrollToPosition(0);
+                int position = getIntent().getIntExtra("position", 0);
+                tweetAdapter.notifyItemChanged(position);
+                rvTweet.scrollToPosition(position);
             }
         }
     }
@@ -147,7 +145,7 @@ public class TimelineActivity extends AppCompatActivity {
                 try {
                     for (int i = 0; i < response.length(); i++) {
                         Tweet tweet = Tweet.fromJson(response.getJSONObject(i));
-                        tweetAdapter.notifyItemChanged(mTweets.addTweet(tweet));
+                        tweetAdapter.notifyItemChanged(mTweets.addTweet(tweet, true));
                     }
                 } catch (JSONException e) {
                     Log.e("TwitterClient", "Couldn't parse timeline JSON");
@@ -160,6 +158,9 @@ public class TimelineActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 if(errorResponse != null)
                     Log.d("TwitterClient", errorResponse.toString());
+                Toast.makeText(TimelineActivity.this, "Could not connect to server", Toast.LENGTH_LONG).show();
+                mTweets.loadFromDatabase();
+                tweetAdapter.notifyDataSetChanged();
                 throwable.printStackTrace();
                 swipeContainer.setRefreshing(false);
             }

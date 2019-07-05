@@ -20,6 +20,7 @@ public class User {
     public String name;
     public String screenName;
     public String profileImageUrl;
+    public boolean isVerified;
 
     public User() {}
 
@@ -29,6 +30,7 @@ public class User {
         user.name = json.getString("name");
         user.uid = json.getLong("id");
         user.screenName = json.getString("screen_name");
+        user.isVerified = json.getBoolean("verified");
         user.profileImageUrl = json.getString("profile_image_url_https").replace("_normal", "");
         Log.e("IMAGEURL", user.profileImageUrl);
 

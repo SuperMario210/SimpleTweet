@@ -6,16 +6,16 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.codepath.apps.restclienttemplate.models.User;
+import com.codepath.apps.restclienttemplate.models.Media;
 
 @Dao
-public interface UserDao {
-    @Query("SELECT * FROM user where uid=:id")
-    public User getById(long id);
+public interface MediaDao {
+    @Query("SELECT * FROM media where uid=:id")
+    public Media getById(long id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public Long insertUser(User user);
+    public Long insertMedia(Media media);
 
     @Delete
-    public void deleteUser(User user);
+    public void deleteMedia(Media media);
 }

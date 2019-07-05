@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "e4972e1975e5e334bbaa4abe14266326",
+    "version": 5,
+    "identityHash": "f991c4ac1f4a3c22b89d832debee3fe5",
     "entities": [
       {
         "tableName": "tweet",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER NOT NULL, `body` TEXT, `createdAt` TEXT, `retweets` INTEGER NOT NULL, `favorites` INTEGER NOT NULL, `isFavorited` INTEGER NOT NULL, `isRetweeted` INTEGER NOT NULL, `replyToUserId` INTEGER NOT NULL, `replyToStatusId` INTEGER NOT NULL, `replyToUserName` INTEGER NOT NULL, `isRetweet` INTEGER NOT NULL, `isReply` INTEGER NOT NULL, `startIndex` INTEGER NOT NULL, `endIndex` INTEGER NOT NULL, `retweeterUid` INTEGER NOT NULL, `userUid` INTEGER NOT NULL, PRIMARY KEY(`uid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER NOT NULL, `body` TEXT, `createdAt` TEXT, `retweets` INTEGER NOT NULL, `favorites` INTEGER NOT NULL, `isFavorited` INTEGER NOT NULL, `isRetweeted` INTEGER NOT NULL, `replyToUserId` INTEGER NOT NULL, `replyToStatusId` INTEGER NOT NULL, `replyToUserName` TEXT, `isRetweet` INTEGER NOT NULL, `isReply` INTEGER NOT NULL, `startIndex` INTEGER NOT NULL, `endIndex` INTEGER NOT NULL, `retweeterUid` INTEGER NOT NULL, `userUid` INTEGER NOT NULL, PRIMARY KEY(`uid`))",
         "fields": [
           {
             "fieldPath": "uid",
@@ -65,8 +65,8 @@
           {
             "fieldPath": "replyToUserName",
             "columnName": "replyToUserName",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "isRetweet",
@@ -160,7 +160,7 @@
       },
       {
         "tableName": "user",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER NOT NULL, `name` TEXT, `screenName` TEXT, `profileImageUrl` TEXT, PRIMARY KEY(`uid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER NOT NULL, `name` TEXT, `screenName` TEXT, `profileImageUrl` TEXT, `isVerified` INTEGER NOT NULL, PRIMARY KEY(`uid`))",
         "fields": [
           {
             "fieldPath": "uid",
@@ -185,11 +185,161 @@
             "columnName": "profileImageUrl",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "isVerified",
+            "columnName": "isVerified",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
             "uid"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "url",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tweetUid` INTEGER NOT NULL, `url` TEXT, `displayUrl` TEXT, `fullUrl` TEXT, `startIndex` INTEGER NOT NULL, `endIndex` INTEGER NOT NULL, PRIMARY KEY(`tweetUid`, `startIndex`, `endIndex`))",
+        "fields": [
+          {
+            "fieldPath": "tweetUid",
+            "columnName": "tweetUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "displayUrl",
+            "columnName": "displayUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fullUrl",
+            "columnName": "fullUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "startIndex",
+            "columnName": "startIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endIndex",
+            "columnName": "endIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "tweetUid",
+            "startIndex",
+            "endIndex"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "hashtag",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tweetUid` INTEGER NOT NULL, `text` TEXT, `startIndex` INTEGER NOT NULL, `endIndex` INTEGER NOT NULL, PRIMARY KEY(`tweetUid`, `startIndex`, `endIndex`))",
+        "fields": [
+          {
+            "fieldPath": "tweetUid",
+            "columnName": "tweetUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "startIndex",
+            "columnName": "startIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endIndex",
+            "columnName": "endIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "tweetUid",
+            "startIndex",
+            "endIndex"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "user_mention",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tweetUid` INTEGER NOT NULL, `userUid` INTEGER NOT NULL, `screenName` TEXT, `userName` TEXT, `startIndex` INTEGER NOT NULL, `endIndex` INTEGER NOT NULL, PRIMARY KEY(`tweetUid`, `startIndex`, `endIndex`))",
+        "fields": [
+          {
+            "fieldPath": "tweetUid",
+            "columnName": "tweetUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userUid",
+            "columnName": "userUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screenName",
+            "columnName": "screenName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userName",
+            "columnName": "userName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "startIndex",
+            "columnName": "startIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endIndex",
+            "columnName": "endIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "tweetUid",
+            "startIndex",
+            "endIndex"
           ],
           "autoGenerate": false
         },
@@ -249,7 +399,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e4972e1975e5e334bbaa4abe14266326\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"f991c4ac1f4a3c22b89d832debee3fe5\")"
     ]
   }
 }

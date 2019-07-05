@@ -3,7 +3,10 @@ package com.codepath.apps.restclienttemplate.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.codepath.apps.restclienttemplate.R;
@@ -24,7 +28,6 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcels;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,8 +39,12 @@ public class ComposeActivity extends AppCompatActivity {
     @BindView(R.id.btnTweet) TextView btnTweet;
     @BindView(R.id.btnCancel) ImageView btnCancel;
     @BindView(R.id.tvRemainingCharacters) TextView tvRemainingCharacters;
+    @BindView(R.id.tvInReplyTo) TextView tvInReplyTo;
 
     TwitterClient client;
+    boolean isReply;
+    long replyId;
+    String replyScreenName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +69,23 @@ public class ComposeActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
+        replyScreenName = getIntent().getStringExtra("replyScreenName");
+        replyId = getIntent().getLongExtra("replyTweetId", 0);
+        isReply = replyScreenName != null;
+
+        if(isReply) {
+            btnTweet.setText("Reply");
+            etStatus.setHint("Tweet your reply");
+            tvInReplyTo.setVisibility(View.VISIBLE);
+            SpannableStringBuilder builder = new SpannableStringBuilder(String.format("Replying to @%s", replyScreenName));
+
+            int color = ContextCompat.getColor(this, R.color.link);
+            builder.setSpan(new ForegroundColorSpan(color), 12, builder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+            tvInReplyTo.setText(builder);
+        } else {
+            tvInReplyTo.setVisibility(View.GONE);
+        }
 
         GlideApp.with(this).load(R.drawable.avatar).transform(new CircleCrop()).into(ivProfileImage);
     }
@@ -75,16 +99,22 @@ public class ComposeActivity extends AppCompatActivity {
         Log.d("ComposeActivity", "updateStatus()");
         String status = etStatus.getText().toString();
 
-        client.updateStatus(status, new JsonHttpResponseHandler() {
+        if(isReply) {
+            status = String.format("@%s %s", replyScreenName, status);
+        }
+
+        client.updateStatus(status, replyId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("ComposeActivity", response.toString());
 
                 try {
                     Tweet tweet = Tweet.fromJson(response);
+                    TwitterApp app = (TwitterApp) ComposeActivity.this.getApplication();
+                    int position = app.getTweetDataHolder().addTweet(tweet, true);
 
                     Intent i = new Intent();
-                    i.putExtra("tweet", Parcels.wrap(tweet));
+                    i.putExtra("position", position);
                     // Activity finished ok, return the data
                     setResult(RESULT_OK, i); // set result code and bundle data for response
                     finish(); // closes the activity, pass data to parent

@@ -18,10 +18,10 @@ import androidx.room.ForeignKey;
     }
 )
 public class TweetMediaJoin {
-    public final int tweetUid;
-    public final int mediaUid;
+    public final long tweetUid;
+    public final long mediaUid;
 
-    public TweetMediaJoin(final int tweetUid, final int mediaUid) {
+    public TweetMediaJoin(final long tweetUid, final long mediaUid) {
         this.tweetUid = tweetUid;
         this.mediaUid = mediaUid;
     }

@@ -18,7 +18,8 @@ import com.facebook.stetho.Stetho;
  */
 public class TwitterApp extends Application {
 
-    MyDatabase myDatabase;
+//    MyDatabase myDatabase;
+    SimpleTweetDatabase mSimpleTweetDatabase;
     TweetDataHolder mTweetDataHolder;
 
     @Override
@@ -26,10 +27,15 @@ public class TwitterApp extends Application {
         super.onCreate();
         // when upgrading versions, kill the original tables by using
 		// fallbackToDestructiveMigration()
-        myDatabase = Room.databaseBuilder(this, MyDatabase.class,
-                MyDatabase.NAME).fallbackToDestructiveMigration().build();
+//        myDatabase = Room.databaseBuilder(this, MyDatabase.class,
+//                MyDatabase.NAME).fallbackToDestructiveMigration().build();
 
-        mTweetDataHolder = new TweetDataHolder();
+        mSimpleTweetDatabase = Room.databaseBuilder(this, SimpleTweetDatabase.class,
+                SimpleTweetDatabase.NAME).fallbackToDestructiveMigration().allowMainThreadQueries().build();
+
+//        mSimpleTweetDatabase.clearAllTables();
+
+        mTweetDataHolder = new TweetDataHolder(mSimpleTweetDatabase);
 
         // use chrome://inspect to inspect your SQL database
         Stetho.initializeWithDefaults(this);
@@ -39,8 +45,12 @@ public class TwitterApp extends Application {
         return (TwitterClient) TwitterClient.getInstance(TwitterClient.class, context);
     }
 
-    public MyDatabase getMyDatabase() {
-        return myDatabase;
+//    public MyDatabase getMyDatabase() {
+//        return myDatabase;
+//    }
+
+    public SimpleTweetDatabase getDatabase() {
+        return mSimpleTweetDatabase;
     }
 
     public TweetDataHolder getTweetDataHolder() {
