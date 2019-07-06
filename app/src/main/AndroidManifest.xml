@@ -13,13 +13,15 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.DetailActivity"
-            android:label="Tweet"></activity>
+        <activity
+            android:name=".activities.DetailActivity"
+            android:label="Tweet" />
         <activity
             android:name=".activities.ComposeActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustResize"></activity>
-        <activity android:name=".activities.TimelineActivity" />
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".activities.TimelineActivity"
+            android:label="" />
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/app_name"

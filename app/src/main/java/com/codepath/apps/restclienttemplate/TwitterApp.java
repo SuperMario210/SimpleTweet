@@ -5,6 +5,7 @@ import android.content.Context;
 
 import androidx.room.Room;
 
+import com.codepath.apps.restclienttemplate.models.TweetDataHolder;
 import com.facebook.stetho.Stetho;
 
 /*
@@ -25,15 +26,10 @@ public class TwitterApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        // when upgrading versions, kill the original tables by using
-		// fallbackToDestructiveMigration()
-//        myDatabase = Room.databaseBuilder(this, MyDatabase.class,
-//                MyDatabase.NAME).fallbackToDestructiveMigration().build();
 
         mSimpleTweetDatabase = Room.databaseBuilder(this, SimpleTweetDatabase.class,
                 SimpleTweetDatabase.NAME).fallbackToDestructiveMigration().allowMainThreadQueries().build();
-
-//        mSimpleTweetDatabase.clearAllTables();
+        mSimpleTweetDatabase.clearAllTables();
 
         mTweetDataHolder = new TweetDataHolder(mSimpleTweetDatabase);
 

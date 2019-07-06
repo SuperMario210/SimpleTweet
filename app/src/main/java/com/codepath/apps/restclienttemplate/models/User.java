@@ -1,7 +1,5 @@
 package com.codepath.apps.restclienttemplate.models;
 
-import android.util.Log;
-
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -20,6 +18,7 @@ public class User {
     public String name;
     public String screenName;
     public String profileImageUrl;
+    public String bannerImageUrl;
     public boolean isVerified;
 
     public User() {}
@@ -32,7 +31,7 @@ public class User {
         user.screenName = json.getString("screen_name");
         user.isVerified = json.getBoolean("verified");
         user.profileImageUrl = json.getString("profile_image_url_https").replace("_normal", "");
-        Log.e("IMAGEURL", user.profileImageUrl);
+        user.bannerImageUrl = json.optString("profile_image_url_https").replace("_normal", "");
 
         return user;
     }

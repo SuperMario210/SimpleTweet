@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate.interfaces;
+package com.codepath.apps.restclienttemplate.daos;
 
 import androidx.room.Dao;
 import androidx.room.Delete;

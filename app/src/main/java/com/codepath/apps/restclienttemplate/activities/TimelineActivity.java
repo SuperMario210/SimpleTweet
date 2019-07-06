@@ -3,8 +3,7 @@ package com.codepath.apps.restclienttemplate.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,13 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.codepath.apps.restclienttemplate.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.TweetAdapter;
-import com.codepath.apps.restclienttemplate.TweetDataHolder;
 import com.codepath.apps.restclienttemplate.TwitterApp;
 import com.codepath.apps.restclienttemplate.TwitterClient;
+import com.codepath.apps.restclienttemplate.adapters.TweetAdapter;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.TweetDataHolder;
+import com.codepath.apps.restclienttemplate.util.EndlessRecyclerViewScrollListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -45,70 +44,51 @@ public class TimelineActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
+        // Setup instance variables
         client = TwitterApp.getRestClient(this);
-
         ButterKnife.bind(this);
         mTweets = ((TwitterApp) getApplication()).getTweetDataHolder();
+
+        // Setup the recycler view adapter
         tweetAdapter = new TweetAdapter(mTweets, this);
         tweetAdapter.setClient(client);
+        rvTweet.setAdapter(tweetAdapter);
+        
+        // Setup the recycler view layout manager
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvTweet.setLayoutManager(linearLayoutManager);
-        rvTweet.setAdapter(tweetAdapter);
-
+        
+        // Setup the scroll listener for infinite pagination
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
+                // Load more tweets to the timeline
                 populateTimeline();
             }
         };
-        // Adds the scroll listener to RecyclerView
         rvTweet.addOnScrollListener(scrollListener);
 
-
+        // Setup the toolbar
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_vector_twitter_bird); // BIRB!!!
 
-
-        // Setup refresh listener which triggers new data loading
+        // Setup refresh listener to refresh timeline when pulled down
         swipeContainer.setOnRefreshListener(() -> {
-            // Your code to refresh the list here.
-            // Make sure you call swipeContainer.setRefreshing(false)
-            // once the network request has completed successfully.
             tweetAdapter.clear();
             populateTimeline();
         });
+
         // Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(R.color.twitter_blue,
-                R.color.medium_red,
-                R.color.medium_green);
+        swipeContainer.setColorSchemeResources(R.color.twitter_blue, R.color.medium_green);
 
-
+        // Load tweets into the timeline
         populateTimeline();
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_timeline, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.miCompose:
-                composeTweet();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void composeTweet() {
+    public void launchCompose(View view) {
+        // Start the compose tweet activity
         Intent i = new Intent(this, ComposeActivity.class);
         startActivityForResult(i, COMPOSE_TWEET_CODE);
     }
@@ -119,6 +99,7 @@ public class TimelineActivity extends AppCompatActivity {
         if (requestCode == COMPOSE_TWEET_CODE) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
+                // Add the new tweet to the timeline
                 int position = getIntent().getIntExtra("position", 0);
                 tweetAdapter.notifyItemChanged(position);
                 rvTweet.scrollToPosition(position);
@@ -129,54 +110,62 @@ public class TimelineActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        tweetAdapter.notifyDataSetChanged();
+        tweetAdapter.notifyDataSetChanged(); //TODO: only update the tweet we need
     }
 
     private void populateTimeline() {
         client.getHomeTimeline(mTweets.getOldestId(), new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("TwitterClient", response.toString());
-            }
-
+            /**
+             * Build timeline from response
+             */
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 Log.d("TwitterClient", response.toString());
                 try {
+                    // Add all tweets to the timeline then notify the adapter
                     for (int i = 0; i < response.length(); i++) {
                         Tweet tweet = Tweet.fromJson(response.getJSONObject(i));
                         tweetAdapter.notifyItemChanged(mTweets.addTweet(tweet, true));
                     }
                 } catch (JSONException e) {
-                    Log.e("TwitterClient", "Couldn't parse timeline JSON");
-                    e.printStackTrace();
+                    Log.e("TwitterClient", "Couldn't parse timeline JSON", e);
                 }
+
+                // Notify the swipe container
                 swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                if(errorResponse != null)
-                    Log.d("TwitterClient", errorResponse.toString());
-                Toast.makeText(TimelineActivity.this, "Could not connect to server", Toast.LENGTH_LONG).show();
-                mTweets.loadFromDatabase();
-                tweetAdapter.notifyDataSetChanged();
-                throwable.printStackTrace();
-                swipeContainer.setRefreshing(false);
+                loadFailure(throwable);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                if(errorResponse != null)
-                    Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-                swipeContainer.setRefreshing(false);
+                loadFailure(throwable);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("TwitterClient", responseString);
-                throwable.printStackTrace();
+                loadFailure(throwable);
+            }
+
+            /**
+             * Notify the user then load the timeline from local storage
+             * @param throwable
+             */
+            private void loadFailure(Throwable throwable) {
+                // Notify the user
+                Log.d("TimelineActivity", "Couldn't load timeline", throwable);
+                Toast.makeText(
+                        TimelineActivity.this,
+                        "Could not connect to server",
+                        Toast.LENGTH_LONG).show();
+
+                // Load tweets from local storage
+                mTweets.loadFromDatabase(tweetAdapter, TimelineActivity.this);
+
+                // Notify the swipe container
                 swipeContainer.setRefreshing(false);
             }
         });
