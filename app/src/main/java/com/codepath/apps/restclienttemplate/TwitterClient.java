@@ -42,8 +42,12 @@ public class TwitterClient extends OAuthBaseClient {
 		client.setTimeout(1000);
 		client.setMaxRetriesAndTimeout(1, 1000);
 	}
-	// CHANGE THIS
-	// DEFINE METHODS for different API endpoints here
+
+	/**
+	 * API call to get user timeline
+	 * @param maxId the maximum id to retrieve
+	 * @param handler callback
+	 */
 	public void getHomeTimeline(long maxId, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("/statuses/home_timeline.json");
 		// Can specify query string params directly or through RequestParams.
@@ -54,6 +58,12 @@ public class TwitterClient extends OAuthBaseClient {
 		client.get(apiUrl, params, handler);
 	}
 
+	/**
+	 * API call to post a tweet
+	 * @param status the tweet body
+	 * @param replyId the id of the tweet bring replied to, 0 if no reply
+	 * @param handler callback
+	 */
 	public void updateStatus(String status, long replyId, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("/statuses/update.json");
 		// Can specify query string params directly or through RequestParams.
@@ -65,6 +75,11 @@ public class TwitterClient extends OAuthBaseClient {
 		client.post(apiUrl, params, handler);
 	}
 
+	/**
+	 * API call to retweet a tweet
+	 * @param id the id of the tweet to retweet
+	 * @param handler callback
+	 */
 	public void retweet(long id, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("/statuses/retweet/" + id + ".json");
 		// Can specify query string params directly or through RequestParams.
@@ -73,6 +88,11 @@ public class TwitterClient extends OAuthBaseClient {
 		client.post(apiUrl, params, handler);
 	}
 
+	/**
+	 * API call to un-retweet a tweet
+	 * @param id the id of the tweet to un-retweet
+	 * @param handler callback
+	 */
 	public void unRetweet(long id, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("/statuses/unretweet/" + id + ".json");
 		// Can specify query string params directly or through RequestParams.
@@ -81,6 +101,11 @@ public class TwitterClient extends OAuthBaseClient {
 		client.post(apiUrl, params, handler);
 	}
 
+	/**
+	 * API call to favorite a tweet
+	 * @param id the id of the tweet to favorite
+	 * @param handler callback
+	 */
     public void favorite(long id, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("/favorites/create.json");
         // Can specify query string params directly or through RequestParams.
@@ -89,6 +114,11 @@ public class TwitterClient extends OAuthBaseClient {
         client.post(apiUrl, params, handler);
     }
 
+	/**
+	 * API call to un-favorite a tweet
+	 * @param id the id of the tweet to un-favorite
+	 * @param handler callback
+	 */
     public void unFavorite(long id, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("/favorites/destroy.json");
         // Can specify query string params directly or through RequestParams.

@@ -18,8 +18,6 @@ import com.facebook.stetho.Stetho;
  *
  */
 public class TwitterApp extends Application {
-
-//    MyDatabase myDatabase;
     SimpleTweetDatabase mSimpleTweetDatabase;
     TweetDataHolder mTweetDataHolder;
 
@@ -40,10 +38,6 @@ public class TwitterApp extends Application {
     public static TwitterClient getRestClient(Context context) {
         return (TwitterClient) TwitterClient.getInstance(TwitterClient.class, context);
     }
-
-//    public MyDatabase getMyDatabase() {
-//        return myDatabase;
-//    }
 
     public SimpleTweetDatabase getDatabase() {
         return mSimpleTweetDatabase;
